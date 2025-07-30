@@ -2,4 +2,3 @@ pyrogram
 tgcrypto
 pymongo
 flask
-python==3.11.8
