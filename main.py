@@ -14,7 +14,7 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 STORE_CHANNEL = os.getenv("STORE_CHANNEL")
 MONGO_URI = os.getenv("MONGO_URI")
-CUSTOM_LINK = os.getenv("CUSTOM_LINK=https://moviezonefile.blogspot.com/2024/07/moviezonefile.html?Luxe=")
+CUSTOM_LINK = os.getenv("CUSTOM_LINK=https://luxeflixverification.blogspot.com/2025/07/verification.html?Luxe=")
 OWNER_ID = int(os.getenv("OWNER_ID"))
 
 bot = Client("filestore", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
