@@ -87,23 +87,31 @@ async def delete_after_delay(chat_id, message_id, delay):
 async def save_file(_, message: Message):
     if not is_admin(message.from_user.id):
         return await message.reply("🚫 Only owner or admins can upload files.")
-    unique_id = generate_unique_id()
+
+    # ✅ Forward to store channel (anonymously)
+    forwarded = await bot.forward_messages(chat_id=int(STORE_CHANNEL), from_chat_id=message.chat.id, message_ids=message.id, as_copy=True)
+
     file_name = (
         message.document.file_name if message.document else
         message.video.file_name if message.video else
-        message.audio.file_name if message.audio else
         "Unnamed File"
     )
-    saved = await bot.copy_message(chat_id=STORE_CHANNEL, from_chat_id=message.chat.id, message_id=message.message_id)
+
+    # ✅ Generate Unique ID
+    unique_id = generate_unique_id()
+
+    # ✅ Save in MongoDB
     files_col.insert_one({
         "file_id": message.message_id,
         "user_id": message.from_user.id,
         "file_name": file_name,
         "unique_id": unique_id,
-        "forwarded_message_id": saved.id
+        "forwarded_message_id": forwarded.id
     })
+
+    # ✅ Send Shareable Link in PM
     link = f"{CUSTOM_LINK}{unique_id}"
-    await message.reply(f"✅ File stored!\n🔗 Shareable Link:\n{link}")
+    await message.reply(f"✅ File stored!\n\n🔗 Your Link:\n{link}")
 
 if __name__ == "__main__":
     Thread(target=lambda: app.run(host="0.0.0.0", port=8080)).start()
