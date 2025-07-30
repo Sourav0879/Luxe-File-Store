@@ -12,9 +12,9 @@ from threading import Thread
 API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-STORE_CHANNEL = os.getenv("STORE_CHANNEL")
+STORE_CHANNEL = int(os.getenv("STORE_CHANNEL"))
 MONGO_URI = os.getenv("MONGO_URI")
-CUSTOM_LINK = os.getenv("CUSTOM_LINK")
+CUSTOM_LINK = os.getenv("CUSTOM_LINK")  # e.g., https://luxeflixverification.blogspot.com/2025/07/verification.html?Luxe=
 OWNER_ID = int(os.getenv("OWNER_ID"))
 
 bot = Client("filestore", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
@@ -65,12 +65,18 @@ async def delete_file(_, message):
 async def start(_, message):
     if len(message.command) == 1:
         return await message.reply("👋 Send a file to get a shareable link.")
+    
     unique_id = message.command[1]
     data = files_col.find_one({"unique_id": unique_id})
     if not data:
         return await message.reply("❌ File not found or deleted.")
+    
     try:
-        sent = await bot.copy_message(chat_id=message.chat.id, from_chat_id=STORE_CHANNEL, message_id=data["forwarded_message_id"])
+        sent = await bot.copy_message(
+            chat_id=message.chat.id,
+            from_chat_id=STORE_CHANNEL,
+            message_id=data["forwarded_message_id"]
+        )
         await message.reply("⏳ This message will be deleted in 10 minutes.")
         asyncio.create_task(delete_after_delay(message.chat.id, sent.message_id, 600))
     except:
@@ -88,8 +94,12 @@ async def save_file(_, message: Message):
     if not is_admin(message.from_user.id):
         return await message.reply("🚫 Only owner or admins can upload files.")
 
-    # ✅ Forward to store channel (anonymously)
-    forwarded = await bot.forward_messages(chat_id=int(STORE_CHANNEL), from_chat_id=message.chat.id, message_ids=message.id, as_copy=True)
+    # ✅ Copy to store channel anonymously
+    forwarded = await bot.copy_message(
+        chat_id=STORE_CHANNEL,
+        from_chat_id=message.chat.id,
+        message_id=message.id
+    )
 
     file_name = (
         message.document.file_name if message.document else
@@ -113,6 +123,7 @@ async def save_file(_, message: Message):
     link = f"{CUSTOM_LINK}{unique_id}"
     await message.reply(f"✅ File stored!\n\n🔗 Your Link:\n{link}")
 
+# Flask server
 if __name__ == "__main__":
     Thread(target=lambda: app.run(host="0.0.0.0", port=8080)).start()
     bot.run()
