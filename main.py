@@ -16,6 +16,7 @@ STORE_CHANNEL = os.getenv("STORE_CHANNEL")
 MONGO_URI = os.getenv("MONGO_URI")
 CUSTOM_LINK = os.getenv("CUSTOM_LINK")
 OWNER_ID = int(os.getenv("OWNER_ID"))
+DATABASE_NAME LuxeFlix
 
 bot = Client("filestore", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 mongo = MongoClient(MONGO_URI)
