@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: luxe-file-store
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    envVars:
+      - key: API_ID
+        value: YOUR_API_ID
+      - key: API_HASH
+        value: YOUR_API_HASH
+      - key: BOT_TOKEN
+        value: YOUR_BOT_TOKEN
+      - key: STORE_CHANNEL
+        value: -100xxxxxxxxxx  # Channel ID, must be numeric
+      - key: MONGO_URI
+        value: mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+      - key: CUSTOM_LINK
+        value: https://your-custom-domain.com/?Luxe=
+      - key: OWNER_ID
+        value: YOUR_NUMERIC_TELEGRAM_ID
