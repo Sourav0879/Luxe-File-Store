@@ -127,12 +127,12 @@ async def save_file(_, message: Message):
         unique_id = generate_unique_id()
 
         files_col.insert_one({
-            "file_id": message.message_id,
-            "user_id": message.from_user.id,
-            "file_name": file_name,
-            "unique_id": unique_id,
-            "forwarded_message_id": forwarded.id
-        })
+    "file_id": message.id,
+    "user_id": message.from_user.id,
+    "file_name": file_name,
+    "unique_id": unique_id,
+    "forwarded_message_id": forwarded.id
+})
 
         shareable_link = f"{CUSTOM_LINK}{unique_id}"
         await message.reply(f"✅ File stored!\n\n🔗 Shareable Link:\n{shareable_link}")
